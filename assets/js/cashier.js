@@ -237,7 +237,8 @@ loadSales = (sales_num) => {
                 } else if (discount_percent == "" && discount_money != "") {
                     discount_info = `${numberFormat(discount_money)}`
                 }
-                tr += `<tr>
+                tr +=
+                    `<tr>
                             <td>${row.product_name}</td>
                             <td>${row.product_code}</td>
                             <td><span class="float-end">${numberFormat(row.price)}</span></td>
@@ -245,32 +246,35 @@ loadSales = (sales_num) => {
                             <td>${row.unit}</td>
                             <td>${discount_info}</td>
                             <td><span class="float-end">${numberFormat(row.total)}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteSales(${row.id}, ${sales_num})" id="delete-data"><i class="fa fa-trash"></i></button>
+                            </td>
                         </tr>`
             })
         }
-        $('tbody#sales-data').html(tr) 
+        $('tbody#sales-data').html(tr)
     })
 }
 
-$('#product_code, #product_name').keydown(function (e) {
-    if (e.keyCode == 13) {
-        insertSales()
-    }
-})
+deleteSales = (id, sales_number) => {
+    console.log(id)
+    let sql = `delete from sales where id = ${id}`
+    db.run(sql, err => {
+        if (err) {
+            console.log(err)
+        } else {
+            loadSales(sales_number)
+            totalSales(sales_number)
 
-$('#cashierModal').keydown(function (e) {
-    
-    if (e.keyCode == 113) {
-        console.log('Hello world');
-        // printSales();
-        salesModal('checkout');
-    }
-})
+        }
+    })
+}
+
 
 totalSales = (sales_number) => {
     let query = `select sum(total) as total_sales from sales where invoice_number = '${sales_number}'`
     db.all(query, (err, row) => {
-        if (err) throw err
+        if (err) console.log("erorr")
         let total_sales = row[0].total_sales
         db.all(`select * from discount_final where invoice_number = '${sales_number}'`, (err, row) => {
             if (err) throw err
@@ -278,11 +282,15 @@ totalSales = (sales_number) => {
                 db.all(`select total_tax from sales_tax where invoice_number = '${sales_number}'`, (err, row) => {
                     if (err) throw err
                     if (row.length < 1) {
-                        $('#total-and-tax').html(numberFormat(total_sales))
+                        $('#total-and-tax').html(numberFormat(net_total_sales))
                     } else {
                         let total_tax = row[0].total_tax
-                        let net_total_sales = parseFloat(total_sales) + parseFloat(total_tax)
-                        $('#total-and-tax, #info-total-sales').html(numberFormat(net_total_sales))
+                        let net_total_sales = total_sales + total_tax
+                        if (net_total_sales != NaN) {
+                            $('#total-and-tax, #info-total-sales').html(numberFormat(net_total_sales))
+                        } else {
+                            $('#total-and-tax, #info-total-sales').html("0")
+                        }
                         $('#input-total-and-tax').val(net_total_sales)
                     }
                 })
@@ -306,12 +314,16 @@ totalSales = (sales_number) => {
                     if (err) throw err
                     if (row.length < 1) {
                         let net_total_sales = parseFloat(total_sales) - parseFloat(total_discount_final)
-                        $('#total-and-tax').html(numberFormat(net_total_sales))
+                        $('#total-and-tax, #info-total-sales').html(numberFormat(net_total_sales))
                         $('#input-total-and-tax').val(net_total_sales)
                     } else {
                         let total_tax = row[0].total_tax
                         let net_total_sales = (parseFloat(total_sales) - parseFloat(total_discount_final)) + parseFloat(total_tax)
-                        $('#total-and-tax, #info-total-sales').html(numberFormat(net_total_sales))
+                        if (net_total_sales != NaN) {
+                            $('#total-and-tax, #info-total-sales').html(numberFormat(net_total_sales))
+                        } else {
+                            $('#total-and-tax, #info-total-sales').html("0")
+                        }
                         $('#input-total-and-tax').val(net_total_sales)
                     }
                 })
@@ -319,6 +331,22 @@ totalSales = (sales_number) => {
         })
     })
 }
+
+
+$('#product_code, #product_name').keydown(function (e) {
+    if (e.keyCode == 13) {
+        insertSales()
+    }
+})
+
+$('#cashierModal').keydown(function (e) {
+    
+    if (e.keyCode == 113) {
+        console.log('Hello world');
+        // printSales();
+        salesModal('checkout');
+    }
+})
 
 salesTax = (sales_number, tax_rate) => {
     queryTax = (sales_number, total_tax) => {
