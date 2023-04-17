@@ -1,6 +1,4 @@
-closeCashier = () => {
-    ipcRenderer.send('close:cashier')
-}
+
 
 getProductName = () => {
     let query = `select * from products order by id desc`
@@ -26,7 +24,8 @@ today = () => {
 today()
 
 openSales = () => {
-    let sales_number = $('#sales-number').val()
+    let salesNum = 0;
+    let sales_number = $('#sales-number').val() 
     let buyer = $('#buyer-select').val()
     let buyer_id = $('#buyer-id').val()
     let buyer_address = $('#buyer-address').val()
@@ -36,6 +35,7 @@ openSales = () => {
     let term = $('#term').val()
     let description = $('#description').val()
     let query = `select max(substr(invoice_number, 7, 7)) as sales_number from sales`
+    
 
     today()
 
@@ -51,13 +51,12 @@ openSales = () => {
         let d = new Date()
         let month = d.getMonth().toString().padStart(2, 0)
         let year = d.getFullYear()
-        let salesNum = `${year}${month}${suffixNum}`
+        salesNum = `${year}${month}${suffixNum}`
         $('#sales-number').val(salesNum)
         // $('#btn-create-new-sales').focus()
+        $('#info-sales-number').html(salesNum)
     })
 
-    $('#info-sales-number').html(sales_number)
-    $('#info-buyer').html(buyer)
     let tax_rate
     let tax_checked = []
     $('.sales-tax:checked').each(function () {
@@ -74,7 +73,7 @@ openSales = () => {
         })
     }
 
-    // $('#modal-new-sales').modal('hide')
+    // // $('#modal-new-sales').modal('hide')
     $('.sales-input').removeAttr('disabled')
     $('#btn-new-sales').prop('disabled', true)
     ipcRenderer.send('sales-number', sales_number)
@@ -109,6 +108,22 @@ getCodeByName = () => {
         })
     }
 }
+
+deleteSales = (sales_num) => {
+    let query = `delete from sales where invoice_number = '${sales_num}'`
+    db.all(query, (err, rows) => {
+        if (err) throw err
+
+    })
+}
+
+closeCashier = () => {
+    let sales_number = $('#sales-number').val() 
+    ipcRenderer.send('close:cashier')
+    deleteSales(sales_number)
+}
+
+
 
 insertSales = () => {
     let sales_number = $('#sales-number').val()
@@ -233,13 +248,22 @@ loadSales = (sales_num) => {
                         </tr>`
             })
         }
-        $('tbody#sales-data').html(tr)
+        $('tbody#sales-data').html(tr) 
     })
 }
 
 $('#product_code, #product_name').keydown(function (e) {
     if (e.keyCode == 13) {
         insertSales()
+    }
+})
+
+$('#cashierModal').keydown(function (e) {
+    
+    if (e.keyCode == 113) {
+        console.log('Hello world');
+        // printSales();
+        salesModal('checkout');
     }
 })
 

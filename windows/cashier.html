@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="../assets/jquery/jquery-ui-1.9.2.custom/css/base/jquery-ui-1.9.2.custom.min.css">
 </head>
 
-<body style="background-color: #F0F3F4;">
+<body id="cashierModal" style="background-color: #F0F3F4;" onload="openSales()">
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
         <div style="display: inline-block; font-size: 13px; color: aliceblue;">
             <img src="../assets/images/icons/small-cashier-machine.png" class="ms-2" id="store-logo" width="30"
@@ -64,7 +64,7 @@
                             <div class="col-12">
                                 <div class="btn-group mb-2 w-100">
                                     <input type="text" class="form-control form-control-sm sales-input"
-                                        id="product_code" placeholder="Kode/Barcode Produk" >
+                                        id="product_code" placeholder="Kode/Barcode Produk" > 
                                     <!-- <button id="btn_add_sales" onclick="insertSales()"
                                         class="btn btn-sm btn-primary sales-input" disabled><i
                                             class="fa fa-plus"></i></button> -->
@@ -257,6 +257,15 @@
             jQuery('.target').hide();
             jQuery('#product_' + $(this).attr('target')).show();
         });
+
+        // document.addEventListener("keydown", function(e) {
+        //     if (e.keyCode == 113) {
+        //         console.log('Hello world');
+        //         printSales();
+        //     }
+        // });
+
+   
     </script>
 </body>
 

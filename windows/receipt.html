@@ -91,7 +91,7 @@
     <script>
         ipcRenderer.on('load:print', (e, salesRecord, storeInfo, salesHeader, salesFooter) => {
 
-            loadPrintSales = () => {
+            loadPrintSales = () => { 
 
                 $('#sales-record').prepend(salesRecord)
                 $('#subtotal').html(salesFooter.subTotal)

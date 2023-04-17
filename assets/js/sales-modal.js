@@ -8,7 +8,7 @@ ipcRenderer.on('load:tbody-tr', (e, content, titleBar, buyerInfo) => {
     title = titleBar
     switch(title) {
         case 'checkout' :
-            $('#btn-submit').html(`<i class="fa fa-print"></i> Print`)
+            $('#btn-submit').html(`<i class="fa fa-print"></i> Print`) 
             inputTotalReceived = IMask(
                 document.getElementById('total-received'),
                 {
@@ -80,6 +80,21 @@ submitUpdate = () => {
             break;
     }
 }
+
+
+submitTidak = () => {
+    console.log('Closed');
+    ipcRenderer.send('update-success:sales-edit')
+    //salesModal.close()
+}
+
+$('#salesTidak').keydown(function (e) {
+    if (e.keyCode == 113) {
+        console.log('Closed');
+        ipcRenderer.send('update-success:sales-edit')
+    }
+})
+
 
 $('#data').on('keydown','#total-received', function(e) {
     if(e.keyCode == 13) {

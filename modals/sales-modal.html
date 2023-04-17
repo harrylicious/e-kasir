@@ -11,16 +11,17 @@
     <link rel="stylesheet" href="../assets/css/main.css">
 </head>
 
-<body>
+<body id="salesTidak" >
     <div style="padding: 0px 30px 40px 30px;">
         <div class="row mt-3" id="data"></div>
     </div>
     <nav class="navbar fixed-bottom navbar-dark bg-dark" style="padding: 4px 20px">
-        <a class="navbar-brand" href="#"></a>
-        <div class="form">
-            <button class="btn btn-sm btn-danger" onclick="submitUpdate()" id="btn-submit"><i
+        <div class="form d-flex w-100">
+            <button class="btn btn-sm btn-danger me-auto" onclick="submitUpdate()" id="btn-submit"><i
                     class="fa fa-paper-plane"></i> Submit</button>
-        </div>
+            <!-- <a class="navbar-brand" href="#"></a> -->
+            <button class="btn btn-primary btn-sm ms-auto" onclick="submitTidak()"><i class="fas fa-times"></i>
+                Tidak</button>
     </nav>
     <script src="../assets/jquery/jquery-1.9.0.min.js"></script>
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>

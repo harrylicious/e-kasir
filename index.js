@@ -14,7 +14,6 @@ const path = require('path')
 const url = require('url')
 const md5 = require('md5')
 remote.initialize()
-console.log(path.join(app.getPath('userData'), 'system/db'))
 let mainWindow
 let productWindow
 let editDataModal
@@ -801,11 +800,14 @@ modalSales = (salesNumber, title, totalSales, buyerInfo) => {
         frame: frameBoolVal,
         title: titleBar
     })
+
     remote.enable(salesModal.webContents)
     salesModal.loadFile('modals/sales-modal.html')
     salesModal.webContents.on('dom-ready', () => {
         salesModal.webContents.send('load:tbody-tr', content, title, buyerAddress)
     })
+    salesModal.show();
+    salesModal.setAlwaysOnTop(true);
 }
 
 ipcMain.on('load:sales-modal', (e, msgSalesNumber, msgTitle, msgTotalSales, msgBuyerInfo) => {
@@ -821,6 +823,7 @@ ipcMain.on('print:sales', (e, msgTotalSales, msgTotalReceived, msgTotalReturned,
     printSales(salesNum, msgTotalSales, msgTotalReceived, msgTotalReturned, msgBuyerInfo, msgDocId)
 })
 
+
 numberFormat = (number) => {
     let numFormat = new Intl.NumberFormat('de-DE').format(number)
     return numFormat
@@ -832,8 +835,15 @@ printSales = (salesNumber, totalSales, totalReceived, totalReturned, buyerInfo, 
             nodeIntegration: true,
             contextIsolation: false
         },
-        autoHideMenuBar: true
+        autoHideMenuBar: true,
+        alwaysOnTop: true,
+        parent: cashierWindow,
+        modal: true,
+        resizable: false,
+        minimizable: false,
+        frame: true,
     })
+
 
     let salesDate
     let d = new Date()
@@ -955,6 +965,8 @@ printSales = (salesNumber, totalSales, totalReceived, totalReturned, buyerInfo, 
     })
 
 }
+
+
 
 ipcMain.on('print:sales-evidence', (e, docId) => {
 
