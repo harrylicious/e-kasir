@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css"> -->
+    <link rel="stylesheet" href="../assets/css/datable-bs.css">
+    <script defer src="../assets/fontawesome/js/all.js"></script>
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+
+<body id="sales" id="chart" onload="setdate()">
+    <div class="container-fluid mb-3">
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-auto" style="font-size: 15px; color: grey">
+                                <i class="fa fa-clipboard"></i> Penjualan Harian
+                            </div>
+                            <div class="col-auto">
+                                <div class="float-end">
+                                    <select class="form-select form-select-sm mb-2" id="daily-sales-month"
+                                        onchange="changeDailySalesChart()">
+                                        <option value="01">Januari</option>
+                                        <option value="02">Februari</option>
+                                        <option value="03">Maret</option>
+                                        <option value="04">April</option>
+                                        <option value="05">Mei</option>
+                                        <option value="06">Juni</option>
+                                        <option value="07">Juli</option>
+                                        <option value="08">Agustus</option>
+                                        <option value="09">September</option>
+                                        <option value="10">Oktober</option>
+                                        <option value="11">November</option>
+                                        <option value="12">Desember</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <select class="form-select form-select-sm mb-2" id="daily-sales-year"
+                                    onchange="changeDailySalesChart()">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mx-auto"><canvas id="myChart" height="100"></canvas></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5><b>JUMLAH STOK BARANG</b></h5>
+                        <h1><b>120</b></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="toolbar-menu">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="main-toolbar">
+                        <div class="row g-3">
+                            <div class="col-auto">
+                                <select name="" id="row_per_page" class="form-select form-select-sm">
+                                    <option value="10">10</option>
+                                    <option value="50">50</option>
+                                    <option value="75">75</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <div class="input-group" id="search-input-group">
+                                    <input type="text" class="form-control form-control-sm" id="search-data"
+                                        name="search-data" placeholder="Search">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm btn-light btn-light-bordered" id="btn-search-data"><i
+                                                class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="pagination" class="col-auto">
+                                <div class="btn-group btn-group-sm">
+                                    <div class="btn-group btn-group-sm me-1">
+                                        <a href="#" class="btn btn-sm btn-light btn-light-bordered" id="first-page"><i
+                                                class="fa fa-step-backward"></i></a>
+                                        <a href="#" class="btn btn-sm btn-light btn-light-bordered" id="prev-page"><i
+                                                class="fa fa-backward"></i></a>
+                                    </div>
+                                    <div class="input-group input-group-sm me-1">
+                                        <input type="text" class="form-control form-control-sm" id="page_number"
+                                            value="1">
+                                        <input type="text" class="form-control form-control-sm" id="total_pages"
+                                            readonly>
+                                    </div>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="#" class="btn btn-sm btn-light btn-light-bordered" id="next-page"><i
+                                                class="fa fa-forward"></i></a>
+                                        <a href="#" class="btn btn-sm btn-light btn-light-bordered" id="last-page"><i
+                                                class="fa fa-step-forward"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="main-table">
+        <div style="padding: 20px 20px 20px 20px">
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table id="myTable" class="table table-sm table-bordered" style="font-size: 13px">
+                            <thead class="thead-light" id="col-head">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Tanggal</th>
+                                    <th>Nomor Penjualan</th>
+                                    <th>Nama Produk</th>
+                                    <th>Kode Produk</th>
+                                    <th>Harga</th>
+                                    <th>Qty</th>
+                                    <th>Satuan</th>
+                                    <th>Potongan</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="data">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../assets/jquery/jquery-1.9.0.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/require.js"></script>
+    <script src="../assets/js/toolbar.js"></script>
+    <script src="../assets/js/sales-data.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/jquery.datatable.js"></script>
+    <script src="../assets/js/datatable.bs.js"></script>
+
+    <script src="../assets/js/sales-chart.js"></script>
+    <script src="../assets/js/sales-report.js"></script>
+    <script src="../assets/js/chart.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "searching": false,
+                "bPaginate": false,
+                "info": false,
+                "lengthChange": false
+            });
+        });
+
+        const ctx = document.getElementById('myChart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['2023-04-12', '2023-04-13', '2023-04-14', '2023-04-15', '2023-04-16', '2023-04-17'],
+                datasets: [{
+                        label: 'Penjualan',
+                        data: [1200000, 900000, 2000000, 650000, 750000, 312000],
+                        // borderWidth: 1,
+                        borderColor: '#345eeb',
+                        backgroundColor: '#345eeb',
+                    },
+                    {
+                        label: 'PRofit',
+                        data: [120000, 90000, 200000, 65000, 75000, 31200],
+                        // borderWidth: 1,
+                        borderColor: '#eb3d34',
+                        backgroundColor: '#eb3d34',
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
