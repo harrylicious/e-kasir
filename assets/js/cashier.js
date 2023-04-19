@@ -1,4 +1,5 @@
 
+//INI UPDATE CASHIER
 
 getProductName = () => {
     let query = `select * from products order by id desc`
@@ -120,6 +121,7 @@ deleteSales = (sales_num) => {
 closeCashier = () => {
     let sales_number = $('#sales-number').val() 
     ipcRenderer.send('close:cashier')
+    console.log(sales_number)
     deleteSales(sales_number)
 }
 
